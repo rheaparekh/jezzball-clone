@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block Game %}
+   <div><p> Hello {{ user }} </div></p>
+{% endblock %}
+
+
+{% block logout %}
+
+   <form action="/logout">
+       <input type="submit" id="logout" value="Logout">
+   </form>
+  
+{% endblock %}
