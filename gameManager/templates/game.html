@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+
+
+{% block Game %}
+   <div ng-app="ballCtrl">
+       <div>
+          <p> Hello {{ user }} </p>
+          <p> Score: {{ score }} </p>
+       </div>
+            
+       <div class="gameContainer"> 
+           <div id="startGame" ng-click="startGame()"> Start Game</div> 
+       </div>
+       
+   </div>
+{% endblock %}
+
+{% block logout %}
+   <br>
+   <form action="/logout">
+       <input type="submit" id="logout" value="Logout" class="btn btn-success">
+   </form>
+{% endblock %}

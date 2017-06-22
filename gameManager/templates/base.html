@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+  <head>
+      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+      <link rel="stylesheet" type="text/css" href="{% static "GameApp/game.css" %}">
+
+      <script type="text/javascript" src="{% static "GameApp/js/angular.min.js" %}"></script>
+
+      <title> game </title>
+
+  </head>
+ 
+  <h1 class="topheader"> Game </h1>
+  <hr>
+  <body>
+  {% block Game %}
+  {% endblock %}
+  </body>
+  {% block logout %}
+  {% endblock %}
+</html>

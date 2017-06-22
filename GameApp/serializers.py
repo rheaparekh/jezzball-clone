@@ -6,4 +6,3 @@ class ScoreSerializer(serializers.ModelSerializer):
       model=Score
       fields=('id','user','score','date')
 
-
