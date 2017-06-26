@@ -9,7 +9,7 @@
 
 #startGame {
     width: 120px;
-    margin-left:240px;
+    margin-left:340px;
     padding: 10px;
     text-align: center;
     background-color: teal;
@@ -17,8 +17,29 @@
 }               
 
 .gameContainer {
-    width:600px;
-    height:450px; 
-    background-color:black;
-    color: teal; 
+    width:850px;
+    float:left;
+}
+
+.circle {
+    display:inline-block;
+    position:absolute;
+    height: 20px;
+    width: 20px;
+    background-color: #999999;
+    border-radius: 20px;
+    border-color: 1px solid black;
+}
+
+.row {
+  margin-left:0px;
+  height: 21px;
+}
+
+.column {
+  background-color:  #daebe8;
+  border:1px solid #b7d7e8;
+  width:21px;
+  height:21px;
+  display:inline-block;
 }

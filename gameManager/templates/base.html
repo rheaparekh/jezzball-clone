@@ -2,22 +2,20 @@
 {% load staticfiles %}
 <html>
   <head>
-      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-      <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+      <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+      <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
       <link rel="stylesheet" type="text/css" href="{% static "GameApp/game.css" %}">
-
-      <script type="text/javascript" src="{% static "GameApp/js/angular.min.js" %}"></script>
-
+ 
+      <script type="text/javascript" src="{% static "GameApp/js/angular.min.js" %}"> </script>
+      <script type="text/javascript" src="{% static "GameApp/js/ball.js" %}"> </script>
       <title> game </title>
 
   </head>
- 
-  <h1 class="topheader"> Game </h1>
-  <hr>
+  <h1 class="topheader"> WallTheBall </h1> 
+  {% block logout %}
+  {% endblock %}
   <body>
   {% block Game %}
   {% endblock %}
   </body>
-  {% block logout %}
-  {% endblock %}
 </html>

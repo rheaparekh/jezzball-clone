@@ -1,24 +1,27 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block logout %}
+      <hr>
+      <form action="logout">
+             <input type="submit" id="logout" value="Logout" class="btn btn-success" style="float:right">
+      </form>
+{% endblock %}
 
 {% block Game %}
-   <div ng-app="ballCtrl">
+   <div ng-app="ngBall" ng-controller="ballCtrl">
        <div>
-          <p> Hello {{ user }} </p>
-          <p> Score: {{ score }} </p>
+          <p> Hello {{ user }}</p>
+           Score:   <div ng-bind="score" >  </div>
        </div>
-            
-       <div class="gameContainer"> 
-           <div id="startGame" ng-click="startGame()"> Start Game</div> 
+       <div id="startGame" ng-click="startGame()"> New Game </div>
+
+       <div >
+          <div class="row" ng-repeat="column in board">
+                <div class="column" ng-style="{'background-color': setStyling($parent.$index, $index)}" ng-repeat="row in column track by $index"></div>
+                <div  ng-repeat="ball in balls" ball-position="ball"></div>
+          </div>         
        </div>
        
    </div>
-{% endblock %}
-
-{% block logout %}
-   <br>
-   <form action="/logout">
-       <input type="submit" id="logout" value="Logout" class="btn btn-success">
-   </form>
 {% endblock %}
