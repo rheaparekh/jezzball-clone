@@ -14,7 +14,12 @@
     text-align: center;
     background-color: teal;
     color: white;
-}               
+}
+
+#startGame:hover {
+    color: black;
+    cursor: pointer;
+}
 
 .gameContainer {
     width:850px;
@@ -26,7 +31,7 @@
     position:absolute;
     height: 20px;
     width: 20px;
-    background-color: #999999;
+    background-color: #000000;
     border-radius: 20px;
     border-color: 1px solid black;
 }
@@ -37,9 +42,13 @@
 }
 
 .column {
-  background-color:  #daebe8;
   border:1px solid #b7d7e8;
   width:21px;
   height:21px;
   display:inline-block;
+}
+
+.column:hover {
+   cursor:pointer;
+   border:1px solid #5b9aa0;
 }
