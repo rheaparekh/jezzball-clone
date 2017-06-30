@@ -53,11 +53,10 @@ app.controller('ballCtrl',function($scope,$timeout){
      var speed=2;
      var rows=24;
      var columns=41;
-     var wallspeed=4;
 
      var colors={
         board:'#daebe8',
-        buildingwall:'#98a4a2',
+        buildingwall:'#b7d7e8',
         wall:'#414645',
      };
      
@@ -93,9 +92,8 @@ app.controller('ballCtrl',function($scope,$timeout){
        }
        else if($scope.board[col][row]=='wall'){
            return colors.wall;
-       }else{   
-           return colors.board;
-       }
+       } 
+       return colors.board; 
      }
 
      $scope.addBall=function(count){
@@ -104,7 +102,7 @@ app.controller('ballCtrl',function($scope,$timeout){
                 x:width * Math.random(),
                 y:210+height * Math.random(),
                 velx: speed*(Math.random()*2-1),
-                vely: speed,
+                vely: speed*(Math.random()*2-1),
             });
             count--;
          }
@@ -129,8 +127,7 @@ app.controller('ballCtrl',function($scope,$timeout){
             if(b.y>height+210){
                BounceY(b,height);
             }
-         }
-         $timeout(Bounce,10);
+         }$timeout(Bounce,50);
     }
 
     function BounceX(b,width){
@@ -142,21 +139,73 @@ app.controller('ballCtrl',function($scope,$timeout){
          b.vely*=-1;
     }
 
-    $scope.startLine=function(column,row){
-        
+    $scope.startLine=function(column,row){  
         if(isGameOver==false){ 
-           console.log(column,row);
+           var count=0;
            if($scope.mode=='H'){
-               $scope.board[column][row]==true;
-               $scope.setStyling(column,row);
+               drawline(column,row,1,0,count);
+               drawline(column,row,-1,0,count);
            }
            else{
-              console.log("FINALLY GOD");
+               drawline(column,row,0,1,count);
+               drawline(column,row,0,-1,count);
            }
         }
     }
 
+    function drawline(column,row,hor,ver,count){
+        if(row==0||row==40){
+            count+=1;
+            $scope.board[column][row]=true;
+        }
+        else if(column==0||column==23){
+             $scope.board[column][row]=true;
+        }
+        else{
+            count+=1;
+            $scope.board[column][row]=true;
+            row=row-hor;
+            column=column-ver;
+            checkcollision(column,row,count,hor,ver);
+            $timeout(function(){drawline(column,row,hor,ver,count);},160);
+        }
+    }
 
+    function checkcollision(column,row,count,hor,ver){
+       balls=$scope.balls;
+       var l=balls.length; 
+       console.log(count);
+       for(var i=0; i<l;i++){
+          var b=balls[i];
+          var r=Math.floor(b.x/21)
+          var c=Math.floor((b.y-210)/21);
+          if(c!=0 && $scope.board[c-1][r]==true && b.vely<0){
+            destroyWall(column,row,count,hor,ver);
+          }
+          else if(c!=40 && $scope.board[c+1][r]==true && b.vely>0){
+             destroyWall(column,row,count,hor,ver);
+          }
+          else if(r!=0 && $scope.board[c][r-1]==true && b.velx<0){
+             destroyWall(column,row,count,hor,ver);
+          }
+          else if(r!=23 && $scope.board[c][r+1]==true && b.velx>0){
+            destroyWall(column,row,count,hor,ver);
+          }
+       }
+    }
+
+    function destroyWall(column,row,count,hor,ver){
+          if(ver==0){
+               for(var i=0;i<count;i++){
+                   $scope.board[column][row+i*hor]=false;
+               } 
+          }
+          else if(hor==0){
+               for(var i=0;i<count; i++){
+                  $scope.board[column+i*ver][row]=false;
+               }
+          }
+    }
     setupBoard();
     $scope.addBall(2);
 });
