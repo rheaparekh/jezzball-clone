@@ -57,7 +57,7 @@ app.controller('ballCtrl',function($scope,$timeout){
      var colors={
         board:'#daebe8',
         buildingwall:'#b7d7e8',
-        wall:'#414645',
+        wall:'#a4c1d0',
      };
      
      $scope.mode='H';
@@ -81,7 +81,11 @@ app.controller('ballCtrl',function($scope,$timeout){
          for(var i=0;i<rows;i++){
              $scope.board[i]=[];
              for(var j=0; j<columns; j++){
-                $scope.board[i][j]=false;
+                if(i==0||j==0||i==rows-1||j==columns-1){
+                  $scope.board[i][j]='wall';
+                }else{
+                 $scope.board[i][j]=false;
+                }
              }
          }
      }
@@ -99,8 +103,8 @@ app.controller('ballCtrl',function($scope,$timeout){
      $scope.addBall=function(count){
          while(count>0){
             $scope.balls.push({
-                x:width * Math.random(),
-                y:210+height * Math.random(),
+                x:21+(width-21) * Math.random(),
+                y:231+(height-21) * Math.random(),
                 velx: speed*(Math.random()*2-1),
                 vely: speed*(Math.random()*2-1),
             });
@@ -113,20 +117,35 @@ app.controller('ballCtrl',function($scope,$timeout){
          var l=balls.length; 
          for(var i=0; i<l;i++){
             var b=balls[i];
+            var r=Math.floor(b.x/21)
+            var c=Math.floor((b.y-210)/21);
+            if($scope.board[c][r]=='wall'){
+                if($scope.board[c][r-1]!='wall' && $scope.board[c][r+1]!='wall'){
+                   if(b.velx<0){               
+                     BounceX(b,r*21+21);
+                   }
+                }else{
+                    if(b.vely<0){
+                     BounceY(b,21*c+21);
+
+                    }
+                }
+            }
+            else if($scope.board[c][r+1]=='wall'){
+                if(b.velx>0){
+                   BounceX(b,r*21);
+                }
+            }
+            else if($scope.board[c+1][r]=='wall'){
+               if(b.vely>0){
+                 BounceY(b,c*21);
+               }
+            }
+         //   if(b.y>height+210-21){
+           //    BounceY(b,height-21);
+           // }
             b.x+=b.velx;
             b.y+=b.vely;
-            if(b.x<0){
-               BounceX(b,0);
-            } 
-            if(b.y<210){
-               BounceY(b,0);
-            } 
-            if(b.x> width){
-               BounceX(b,width);
-            }
-            if(b.y>height+210){
-               BounceY(b,height);
-            }
          }$timeout(Bounce,50);
     }
 
@@ -138,71 +157,94 @@ app.controller('ballCtrl',function($scope,$timeout){
          b.y=420-b.y+2*height;
          b.vely*=-1;
     }
-
+    var countwall=0;
     $scope.startLine=function(column,row){  
         if(isGameOver==false){ 
-           var count=0;
            if($scope.mode=='H'){
-               drawline(column,row,1,0,count);
-               drawline(column,row,-1,0,count);
+               drawline(column,row,1,0,0,true);
+               drawline(column,row,-1,0,0,true);
            }
            else{
-               drawline(column,row,0,1,count);
-               drawline(column,row,0,-1,count);
+               drawline(column,row,0,1,0,true);
+               drawline(column,row,0,-1,0,true);
            }
         }
     }
 
-    function drawline(column,row,hor,ver,count){
-        if(row==0||row==40){
-            count+=1;
-            $scope.board[column][row]=true;
+    function drawline(column,row,hor,ver,count,check){
+     if(check==true){
+        if($scope.board[column][row]=='wall'){
+            makewall(column,row,count,hor,ver);
         }
-        else if(column==0||column==23){
-             $scope.board[column][row]=true;
+        else if(count>0 && (column==0||column==23)){
+           count+=1;  
+           $scope.board[column][row]=true;
+           makewall(column,row,count,hor,ver);
         }
         else{
             count+=1;
             $scope.board[column][row]=true;
             row=row-hor;
             column=column-ver;
-            checkcollision(column,row,count,hor,ver);
-            $timeout(function(){drawline(column,row,hor,ver,count);},160);
+            var random=checkcollision(column,row,count,hor,ver,check);
+            $timeout(function(){drawline(column,row,hor,ver,count,random);},160);
         }
+     }
+    }
+    
+    function makewall(column,row,count,hor,ver){
+          if(ver==0){
+              for(var i=0;i<=count;i++){
+                 $scope.board[column][row+i*hor]='wall';
+              }
+          }
+          else{
+              for(var i=0;i<=count;i++){
+                 $scope.board[column+i*ver][row]='wall';
+              }
+          }
     }
 
-    function checkcollision(column,row,count,hor,ver){
+    function checkcollision(column,row,count,hor,ver,check){
        balls=$scope.balls;
        var l=balls.length; 
-       console.log(count);
        for(var i=0; i<l;i++){
           var b=balls[i];
           var r=Math.floor(b.x/21)
           var c=Math.floor((b.y-210)/21);
           if(c!=0 && $scope.board[c-1][r]==true && b.vely<0){
-            destroyWall(column,row,count,hor,ver);
+              destroyWall(column,row,count,hor,ver);
+              check=false;
           }
           else if(c!=40 && $scope.board[c+1][r]==true && b.vely>0){
              destroyWall(column,row,count,hor,ver);
+             check=false;
           }
           else if(r!=0 && $scope.board[c][r-1]==true && b.velx<0){
              destroyWall(column,row,count,hor,ver);
+             check=false;
           }
           else if(r!=23 && $scope.board[c][r+1]==true && b.velx>0){
-            destroyWall(column,row,count,hor,ver);
+             destroyWall(column,row,count,hor,ver);
+             check=false;
           }
        }
+       return check;
     }
 
     function destroyWall(column,row,count,hor,ver){
           if(ver==0){
-               for(var i=0;i<count;i++){
+               for(var i=0;i<=count;i++){
+                 if($scope.board[column][row+i*hor]!='wall'){
                    $scope.board[column][row+i*hor]=false;
+                 }
                } 
           }
-          else if(hor==0){
-               for(var i=0;i<count; i++){
-                  $scope.board[column+i*ver][row]=false;
+          else{
+               for(var i=0;i<=count; i++){
+                 if($scope.board[column+i*ver][row]!='wall'){
+                   $scope.board[column+i*ver][row]=false;
+                 }
                }
           }
     }
