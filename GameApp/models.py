@@ -9,6 +9,6 @@ class Score(models.Model):
    
     class Meta:
         ordering=['user','score','date']
-    
-    
-
+   
+    def __unicode__(self):
+         return unicode(self.score)

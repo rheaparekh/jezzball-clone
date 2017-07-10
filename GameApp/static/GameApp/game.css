@@ -7,8 +7,48 @@
    color: teal;
 }
 
+#div {
+   display:inline-block;
+}
+
+#table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 500px;
+}
+
+#td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+#td:nth-child(even) {
+   background-color: #dddddd;
+}
+.game-overlay {
+    width: 860px;
+    height: inherit;
+    background-color: rgba(255, 255, 255, 0.3);
+    position: absolute;
+    top: inherit;
+    left: inherit;
+    z-index: 10;
+    font-size:35px;
+    text-align: center;
+    overflow: hidden;
+    padding-top:150px;
+    padding-bottom:255px;
+    box-sizing: border-box;
+                       
+    .lower {
+     display: block;
+     margin-top: 29px;
+     font-size: 20px;
+     }
+}
 #startGame {
     width: 120px;
+    display:inline-block;
     margin-left:340px;
     padding: 10px;
     text-align: center;

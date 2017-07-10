@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block logout %}
+   <hr>
+   <form action="logout">
+       <input type="submit" id="logout" value="Logout" class="btn btn-success" style="float:right">
+   </form>
+{% endblock %}
+
+{% block Score %}
+  {% for s in score_list %}
+  <table id="table">
+  <tr id="td">
+     <td>{{s.date}}</td>
+     <td>{{s.score}}</td>
+     <td>{{s.user}}</td>
+  </tr>
+  </table>
+  {% endfor %}
+  <a href="/../" > Go back to the game </a>
+{% endblock %}

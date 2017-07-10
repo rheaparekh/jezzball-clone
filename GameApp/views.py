@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from GameApp.forms import UserCreateForm, AuthenticateForm
 from GameApp.models import Score
 from django.http import HttpResponse
+from django.views.decorators.csrf import requires_csrf_token
 
 def index(request,auth_form=None,user_form=None):
   if request.user.is_authenticated():
@@ -13,6 +14,16 @@ def index(request,auth_form=None,user_form=None):
          auth_form=auth_form or AuthenticateForm()
          user_form=user_form or UserCreateForm()
          return render(request,'signupbase.html',{'auth_form':auth_form,'user_form':user_form})
+
+def score_view(request):
+  if request.user.is_authenticated():
+     score_list=Score.objects.order_by('date')
+     context={'score_list':score_list}
+     return render(request,'score.html',context)
+
+     if request.method=="POST":
+          print request.body
+          return HttpResponse("dfs")
 
 def login_view(request):
      if request.method=="POST":

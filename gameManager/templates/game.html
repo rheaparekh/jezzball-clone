@@ -7,17 +7,30 @@
              <input type="submit" id="logout" value="Logout" class="btn btn-success" style="float:right">
       </form>
 {% endblock %}
-
 {% block Game %}
    <div ng-app="ngBall" ng-controller="ballCtrl">
        <div>
-           Score: <div ng-bind="score" >  </div>
-           mode: <div ng-bind="mode"> </div>
+           Score: <div ng-bind="score" id="div" data-user={{user}}> </div> &nbsp; &nbsp;
+           Mode: <div ng-bind="mode" id="div"></div> &nbsp; &nbsp;
+           Life: <div ng-bind="life" id="div"></div> &nbsp; &nbsp;
+           Percent: <div ng-bind="percent" id="div"></div>
        </div>
-       <div id="startGame" ng-click="startGame()"> New Game </div>
+       <input type="hidden" id="myVar" name="variable" value="{{user.username}}">
+       
+       <div>
+         <div id="startGame" ng-click="startGame()"> New Game </div> 
+         <a href="/scores"> Scores</a>
+       <div>
 
        <div ng-mouse-wheel-up="mode='H'" ng-mouse-wheel-down="mode='V'">
-          <div class="row" ng-repeat="column in board track by $index">
+          
+          <div class="game-overlay" ng-if="isGameOver">Game Over
+             <form  method="post" ng-submit="gameOver()">
+                {% csrf_token %}
+                <input type="submit" value="Okay" class="btn btn-success" >
+             </form>
+          </div> 
+          <div class="row" ng-repeat="column in board track by $index" >
                 <div class="column"  ng-style="{'background-color': setStyling($parent.$index, $index)}" ng-repeat="row in column track by $index" ng-click="startLine($parent.$index,$index)"></div>
                 <div  ng-repeat="ball in balls" ball-position="ball"></div>
           </div>         

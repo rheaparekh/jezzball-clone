@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load staticfiles %}
+{% csrf_token %}
 <html>
   <head>
       <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -16,6 +17,9 @@
   {% endblock %}
   <body>
   {% block Game %}
+  {% endblock %}
+
+  {% block Score %}
   {% endblock %}
   </body>
 </html>
