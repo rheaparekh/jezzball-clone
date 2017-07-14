@@ -22,9 +22,7 @@
     text-align: left;
     padding: 8px;
 }
-#td:nth-child(even) {
-   background-color: #dddddd;
-}
+
 .game-overlay {
     width: 860px;
     height: inherit;

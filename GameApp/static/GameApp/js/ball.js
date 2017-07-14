@@ -47,8 +47,7 @@ app.directive('ngMouseWheelUp',function(){
    };
 });
 
-app.config(function($interpolateProvider,$httpProvider){
-      $interpolateProvider.startSymbol('{[{').endSymbol('}]}');
+app.config(function($httpProvider){
       $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 });
 
@@ -59,6 +58,7 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
      var speed=6;
      var rows=24;
      var columns=41;
+     var filled_cells=0;
 
      var colors={
         board:'#daebe8',
@@ -71,10 +71,8 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
      $scope.isGameOver=false;
      $scope.balls=[];
      $scope.score= 0;
-     $scope.percent=0;
-
-     var myVar=document.getElementById("myVar").value;
-
+     $scope.percent=Math.floor(filled_cells/863)+'%';
+      
      $scope.startGame=function(){
         setupBoard();
         $scope.level=1;
@@ -86,12 +84,21 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
      };
 
      function gameOver(){
-         console.log("hhh");
          $scope.isGameOver=true;
-         var arg={'user':myVar, 'score':$scope.score, 'date':new Date().getTime() }
-         console.log(arg);
-         $.get("/scores",arg).done(function(data){
-            console.log("sefs");
+         var userdata={'score':$scope.score,
+                       'date':new Date().getTime(),
+                       }
+         console.log(userdata);
+         $.ajax({
+             method:'POST',
+             url:"/save_scores",
+             data:userdata,
+             error:function(e){
+               console.log(e);
+             },
+             success:function(){
+               console.log("Rfgd");
+             }
          });
      };
 
@@ -115,7 +122,6 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
      }
 
      $scope.setStyling=function(col,row){
-       $scope.percent=0;
        if($scope.board[col][row]==true){
            return colors.buildingwall;
        }
@@ -149,27 +155,42 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
             var r=Math.floor(b.x/21)
             var c=Math.floor((b.y-160)/21);
             if($scope.board[c][r]=='wall'){
-                if($scope.board[c][r-1]!='wall' && $scope.board[c][r+1]!='wall'){
+                console.log(1);
+                if(($scope.board[c][r-1]!='wall' && $scope.board[c][r+1]!='wall')){
                    if(b.velx<0){               
                      BounceX(b,r*21+21);
+
                    }
                 }else{
                     if(b.vely<0){
                      BounceY(b,21*c+21);
-
                     }
                 }
             }
-            else if($scope.board[c][r+1]=='wall'){
+            else if($scope.board[c][r+1]=='wall'||$scope.board[c][r+1]=='markwall'){
+                console.log(2);
                 if(b.velx>0){
                    BounceX(b,r*21);
                 }
             }
-            else if($scope.board[c+1][r]=='wall'){
+            else if($scope.board[c+1][r]=='wall'|| $scope.board[c+1][r]=='markwall'){
+               console.log(3);
                if(b.vely>0){
                  BounceY(b,c*21);
                }
             }
+            //else if($scope.board[c][r-1]=='wall'||$scope.board[c][r+1]=='markwall'){
+              //  console.log(4);
+                //if(b.velx<0){
+                  // BounceX(b,r*21);
+               // }
+           // }
+            //else if($scope.board[c-1][r]=='wall'|| $scope.board[c+1][r]=='markwall'){
+              // if(b.vely<0){
+                // console.log("This is cooooooll!")
+                 //BounceY(b,c*21);
+               //}
+            //}
             b.x+=b.velx;
             b.y+=b.vely;
          }$timeout(Bounce,50);
@@ -292,33 +313,37 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
              if(ver==0 && counter==2){
                 if((c<checkcolumn1)|| (c>column)){
                    countball1+=1;
+                   console.log(countball1);
                    if(countball1==2){
-                       Fillcell(row,saverow,column,checkcolumn1,);
+                       Fillcell(row,saverow,column,checkcolumn1,1,0);
                    }
                 }
                 else if((c<column)|| (c>checkcolumn2)){
                    countball2+=1;
+                   console.log(countball2);
                    if(countball2==2){
-                      Fillcell(row,saverow,column,checkcolumn2,);
+                      Fillcell(row,saverow,column,checkcolumn2,1,0);
                    }
                 }
              }else if(hor==0 && counter==2){
                 if((r<checkrow1)||(r>row)){
                    countball1+=1;
+                   console.log(countball1);
                    if(countball1==2){
-                       Fillcell(row,checkrow1,column,savecolumn);
+                       Fillcell(row,checkrow1,column,savecolumn,0,1);
                    }
                 }else if((r<row)||(r>checkrow2)){
                    countball2+=1;
+                   console.log(countball2);
                    if(countball2==2){
-                      Fillcell(row,checkrow2,column,savecolumn);
+                      Fillcell(row,checkrow2,column,savecolumn,0,1);
                    }
                 }
              }    
         }    
     }
     
-    function Fillcell(row1,row2,column1,column2){
+    function Fillcell(row1,row2,column1,column2,hor,ver){
        var c1,c2,r1,r2;
        if(column1>column2){
           c1=column2;
@@ -334,11 +359,24 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
           r1=row1;
           r2=row2;
       }
-      console.log(r1,r2,c1,c2);
-      for(var i=r1+1; i<r2;i++){
-         for(var j=c1+1; j<c2; j++){
-            $scope.board[j][i]='wall';
-         }
+      if(ver==0){
+        for(var i=r1+1; i<r2; i++){
+           for(var j=c1; j<=c2; j++){
+              $scope.board[j][i]='wall';
+              if(j!=c1||j!=c2){
+                 filled_cells+=1;
+              }
+           }
+        }
+      }else{
+        for(var i=r1; i<=r2; i++){
+            for(var j=c1+1; j<c2; j++){
+               $scope.board[j][i]='wall';
+               if(i!=r1||i!=r2){
+                 filled_cells+=1;
+               }
+            }
+        }
       }
     }
 

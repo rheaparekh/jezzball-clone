@@ -21,9 +21,13 @@ def score_view(request):
      context={'score_list':score_list}
      return render(request,'score.html',context)
 
-     if request.method=="POST":
-          print request.body
-          return HttpResponse("dfs")
+def score_save(request):
+   if request.user.is_authenticated():
+       user=request.user
+       score=request.POST.get('score')
+       date=request.POST.get('date')
+       scoresave=Score.objects.create(user=user,score=score,date=date)
+       return HttpResponse("")
 
 def login_view(request):
      if request.method=="POST":
