@@ -72,12 +72,14 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
      $scope.check=false;
      $scope.balls=[];
      $scope.score= 0;
-     $scope.percent=Math.floor(filled_cells/863)+'%';
+     $scope.percent=0;
+     $scope.nextlevel=false;
       
      $scope.startGame=function(){
         setupBoard();
         $scope.level=1;
         $scope.score=0;
+        $scope.percent=0;
         $scope.life=3;
         Bounce();
         timeout=new Date().getTime();
@@ -91,15 +93,24 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
          var userdata={'score':$scope.score,
                        'date':new Date().getTime(),
                        }
-         //$.ajax({
-           //  method:'POST',
-            // url:"/save_scores",
-             //data:userdata,
-             //error:function(e){
-              // console.log(e);
-            // },
-        // });
+         $.ajax({
+             method:'POST',
+             url:"/save_scores",
+             data:userdata,
+             error:function(e){
+               console.log(e);
+             },
+         });
      };
+
+     $scope.nextLevel=function(){
+        $scope.nextlevel=false;
+        setupBoard();
+        $scope.percent=0;
+        $scope.level=$scope.level+1;
+        $scope.score=$scope.score+200;
+        $scope.addBall(1);
+     }
 
      function setupBoard(){
          $scope.board=[];
@@ -220,7 +231,7 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
     function drawline(column,row,hor,ver,count,check){
      if($scope.life>0){
       if(check==true){
-        if($scope.board[column][row]=='wall'){
+        if($scope.board[column][row]=='wall' || $scope.board[column][row]=='markwall'){
             makewall(column,row,count,hor,ver);
         }
         else{
@@ -238,32 +249,42 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
     var savecolumn,saverow;
     function makewall(column,row,count,hor,ver){
           counter++;
+          filled_cells=0;
           if(ver==0){
               for(var i=0;i<=count;i++){
-                 if($scope.board[column][row+i*hor]=='wall'){
+                 if($scope.board[column][row+i*hor]=='wall'|| $scope.board[column][row+i*hor]=='markwall'){
                     $scope.board[column][row+i*hor]='markwall';
+                    filled_cells+=1;
                  }
                  else{
                      $scope.board[column][row+i*hor]='wall';
+                     filled_cells+=1;
                  }
               }
+              $scope.percent=Math.floor((($scope.percent*863/100+filled_cells)/863)*100);
           }
           else{
               for(var i=0;i<=count;i++){
-               if($scope.board[column+i*ver][row]=='wall'){
+               if($scope.board[column+i*ver][row]=='wall'|| $scope.board[column+i*ver][row]=='markwall'){
                   $scope.board[column+i*ver][row]='markwall';
+                  filled_cells+=1;
                }
                else{
                  $scope.board[column+i*ver][row]='wall';
+                 filled_cells+=1;
                }
               }
+             $scope.percent=Math.floor((($scope.percent*863/100+filled_cells)/863)*100);
           }
           coverBoard(column,row,hor,ver,counter);
           if(counter==2){
             counter=0;
+          } 
+          if($scope.percent>=75){
+             $scope.nextlevel=true;
           }
-          
-    }
+    } 
+
     function coverBoard(column,row,hor,ver,counter){
         balls=$scope.balls;
         var l=balls.length;
@@ -400,17 +421,19 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
           row1=row2;
           row2=k;
       }
+      filled_cells=0;
       if(ver==0){
         for(var i=row2+1; i<row1; i++){
-           for(var j=column2; j<=column1; j++){
+           for(var j=column2+1; j<column1; j++){
               $scope.board[j][i]='wall';
               if(j!=column2||j!=column1){
                  filled_cells+=1;
               }
            }
         }
+        $scope.percent=Math.floor((($scope.percent*863/100+filled_cells)/863)*100);
       }else{
-        for(var i=row2; i<=row1; i++){
+        for(var i=row2+1; i<row1; i++){
             for(var j=column2+1; j<column1; j++){
                $scope.board[j][i]='wall';
                if(i!=row1||i!=row2){
@@ -418,6 +441,10 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
                }
             }
         }
+        $scope.percent=Math.floor((($scope.percent*863/100+filled_cells)/863)*100);
+      }
+      if($scope.percent>=75){
+         $scope.nextlevel=true;
       }
     }
 

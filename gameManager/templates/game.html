@@ -22,7 +22,12 @@
           
           <div class="game-overlay" ng-if="isGameOver">Game Over <br> 
              Score: <div ng-bind="score" id="div"></div>
-          </div> 
+          </div>
+           
+          <div class="game-overlay" ng-if="nextlevel">Next level <br>
+              <div id="startGame" ng-click="nextLevel()"> Okay </div>
+          </div>
+
           <div class="row" ng-repeat="column in board track by $index" >
                 <div class="column"  ng-style="{'background-color': setStyling($parent.$index, $index)}" ng-repeat="row in column track by $index" ng-click="startLine($parent.$index,$index)"></div>
                 <div  ng-repeat="ball in balls" ball-position="ball"></div>
