@@ -12,7 +12,6 @@
            Life: <div ng-bind="life" id="div"></div> &nbsp; &nbsp;
            Percent: <div ng-bind="percent" id="div"></div>
        </div>
-       <input type="hidden" id="myVar" name="variable" value="{{user.username}}">
        
        <div>
          <div id="startGame" ng-click="startGame()"> New Game </div> 
@@ -21,11 +20,8 @@
 
        <div ng-mouse-wheel-up="mode='H'" ng-mouse-wheel-down="mode='V'">
           
-          <div class="game-overlay" ng-if="isGameOver">Game Over
-             <form  method="post" ng-submit="gameOver()">
-                {% csrf_token %}
-                <input type="submit" value="Okay" class="btn btn-success" >
-             </form>
+          <div class="game-overlay" ng-if="isGameOver">Game Over <br> 
+             Score: <div ng-bind="score" id="div"></div>
           </div> 
           <div class="row" ng-repeat="column in board track by $index" >
                 <div class="column"  ng-style="{'background-color': setStyling($parent.$index, $index)}" ng-repeat="row in column track by $index" ng-click="startLine($parent.$index,$index)"></div>

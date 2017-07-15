@@ -69,6 +69,7 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
      $scope.life=3; 
      $scope.mode='H';
      $scope.isGameOver=false;
+     $scope.check=false;
      $scope.balls=[];
      $scope.score= 0;
      $scope.percent=Math.floor(filled_cells/863)+'%';
@@ -81,25 +82,23 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
         Bounce();
         timeout=new Date().getTime();
         $scope.isGameOver= false;
+        $scope.check=true;
      };
 
      function gameOver(){
+         $scope.check=false;
          $scope.isGameOver=true;
          var userdata={'score':$scope.score,
                        'date':new Date().getTime(),
                        }
-         console.log(userdata);
-         $.ajax({
-             method:'POST',
-             url:"/save_scores",
-             data:userdata,
-             error:function(e){
-               console.log(e);
-             },
-             success:function(){
-               console.log("Rfgd");
-             }
-         });
+         //$.ajax({
+           //  method:'POST',
+            // url:"/save_scores",
+             //data:userdata,
+             //error:function(e){
+              // console.log(e);
+            // },
+        // });
      };
 
      function setupBoard(){
@@ -152,45 +151,43 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
          var l=balls.length; 
          for(var i=0; i<l;i++){
             var b=balls[i];
-            var r=Math.floor(b.x/21)
+            var r=Math.floor(b.x/21);
             var c=Math.floor((b.y-160)/21);
-            if($scope.board[c][r]=='wall'){
-                console.log(1);
-                if(($scope.board[c][r-1]!='wall' && $scope.board[c][r+1]!='wall')){
-                   if(b.velx<0){               
-                     BounceX(b,r*21+21);
+          //  if($scope.board[c][r]=='wall'){
+            //    console.log("not cool");
+              //  if(($scope.board[c][r-1]!='wall' && $scope.board[c][r+1]!='wall')){
+                 //  if(b.velx<0){               
+                   //  BounceX(b,r*21+21);
+                   //  console.log("Dgh");
 
-                   }
-                }else{
-                    if(b.vely<0){
-                     BounceY(b,21*c+21);
-                    }
-                }
-            }
-            else if($scope.board[c][r+1]=='wall'||$scope.board[c][r+1]=='markwall'){
-                console.log(2);
+                   //}
+                //}else{
+                  //  if(b.vely<0){
+                    // BounceY(b,21*c+21);
+                     //console.log("dhus");
+                    //}
+                //}
+           // }
+           if($scope.board[c][r+1]=='wall' || $scope.board[c][r+1]=='markwall'){
                 if(b.velx>0){
                    BounceX(b,r*21);
                 }
             }
-            else if($scope.board[c+1][r]=='wall'|| $scope.board[c+1][r]=='markwall'){
-               console.log(3);
+            else if($scope.board[c+1][r]=='wall' || $scope.board[c+1][r]=='markwall'){
                if(b.vely>0){
                  BounceY(b,c*21);
                }
             }
-            //else if($scope.board[c][r-1]=='wall'||$scope.board[c][r+1]=='markwall'){
-              //  console.log(4);
-                //if(b.velx<0){
-                  // BounceX(b,r*21);
-               // }
-           // }
-            //else if($scope.board[c-1][r]=='wall'|| $scope.board[c+1][r]=='markwall'){
-              // if(b.vely<0){
-                // console.log("This is cooooooll!")
-                 //BounceY(b,c*21);
-               //}
-            //}
+            else if($scope.board[c][r-1]=='wall'|| $scope.board[c][r-1]=='markwall'){
+                if(b.velx<0){
+                   BounceX(b,r*21+21);
+                }
+            }
+            else if($scope.board[c-1][r]=='wall'|| $scope.board[c-1][r]=='markwall'){
+               if(b.vely<0){
+                 BounceY(b,c*21+21);
+               }
+            }
             b.x+=b.velx;
             b.y+=b.vely;
          }$timeout(Bounce,50);
@@ -207,7 +204,7 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
     }
     
     $scope.startLine=function(column,row){  
-        if($scope.isGameOver==false && $scope.board[column][row]==false){ 
+        if($scope.isGameOver==false && $scope.board[column][row]==false && $scope.check==true){ 
            counter=0;
            if($scope.mode=='H'){
                drawline(column,row,-1,0,0,true);
@@ -306,6 +303,17 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
                }
             }
         }
+        if(saverow>row){
+          var k=saverow;
+          saverow=row;
+          row=k;
+        }
+        if(savecolumn>column){
+          var k=savecolumn;
+          savecolumn=column;
+          column=k;
+        }
+        console.log(savecolumn,column,saverow,row);
         for(var i=0;i<l;i++){
              var b=balls[i];
              var r=Math.floor(b.x/21);
@@ -314,65 +322,98 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
                 if((c<checkcolumn1)|| (c>column)){
                    countball1+=1;
                    console.log(countball1);
-                   if(countball1==2){
+                   if(countball1>=l){
                        Fillcell(row,saverow,column,checkcolumn1,1,0);
                    }
                 }
-                else if((c<column)|| (c>checkcolumn2)){
+                else if((c>checkcolumn1)||c<column){
+                  if(r<saverow||r>row){
+                     countball1+=1;
+                     console.log(countball1);
+                     if(countball1>=l){
+                         Fillcell(row,saverow,column,checkcolumn1,1,0);
+                     }
+                  }
+                }
+                if((c<column)|| (c>checkcolumn2)){
                    countball2+=1;
                    console.log(countball2);
-                   if(countball2==2){
+                   if(countball2>=l){
                       Fillcell(row,saverow,column,checkcolumn2,1,0);
+                   }
+                }
+                else if(c>column||c<checkcolumn2){
+                   if(r<saverow||r>row){
+                     countball2+=1;
+                     console.log(countball2);
+                     if(countball2>=l){
+                       Fillcell(row,saverow,column,checkcolumn2,1,0);
+                     }
                    }
                 }
              }else if(hor==0 && counter==2){
                 if((r<checkrow1)||(r>row)){
                    countball1+=1;
                    console.log(countball1);
-                   if(countball1==2){
+                   if(countball1>=l){
                        Fillcell(row,checkrow1,column,savecolumn,0,1);
                    }
-                }else if((r<row)||(r>checkrow2)){
+                }
+                else if(r>checkrow1||r<row){
+                  if(c<savecolumn||c>column){
+                     countball1+=1;
+                     console.log(countball1);
+                     if(countball1>=l){
+                          Fillcell(row,checkrow1,column,savecolumn,0,1);
+                     }
+                  }
+                }
+                if((r<row)||(r>checkrow2)){
                    countball2+=1;
                    console.log(countball2);
-                   if(countball2==2){
+                   if(countball2>=l){
                       Fillcell(row,checkrow2,column,savecolumn,0,1);
                    }
                 }
-             }    
+                else if(r>row||r<checkrow2){
+                   if(c<savecolumn||c>column){
+                     countball2+=1;
+                     console.log(countball2);
+                     if(countball2>=l){
+                        Fillcell(row,checkrow2,column,savecolumn,0,1);
+                     }
+                   }
+                }
+           }
         }    
     }
     
     function Fillcell(row1,row2,column1,column2,hor,ver){
        var c1,c2,r1,r2;
-       if(column1>column2){
-          c1=column2;
-          c2=column1;
-       }else if(column1<column2){
-          c1=column1;
-          c2=column2;
-      }
-      if(row1>row2){
-          r1=row2;
-          r2=row1;
-      }else if(row1<row2){
-          r1=row1;
-          r2=row2;
+       if(column1<column2){
+          var k=column1;
+          column1=column2;
+          column2=k;
+       }
+      if(row1<row2){
+          var k=row1;
+          row1=row2;
+          row2=k;
       }
       if(ver==0){
-        for(var i=r1+1; i<r2; i++){
-           for(var j=c1; j<=c2; j++){
+        for(var i=row2+1; i<row1; i++){
+           for(var j=column2; j<=column1; j++){
               $scope.board[j][i]='wall';
-              if(j!=c1||j!=c2){
+              if(j!=column2||j!=column1){
                  filled_cells+=1;
               }
            }
         }
       }else{
-        for(var i=r1; i<=r2; i++){
-            for(var j=c1+1; j<c2; j++){
+        for(var i=row2; i<=row1; i++){
+            for(var j=column2+1; j<column1; j++){
                $scope.board[j][i]='wall';
-               if(i!=r1||i!=r2){
+               if(i!=row1||i!=row2){
                  filled_cells+=1;
                }
             }
