@@ -77,6 +77,8 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
       
      $scope.startGame=function(){
         setupBoard();
+        $scope.balls=[];
+        $scope.addBall(2);
         $scope.level=1;
         $scope.score=0;
         $scope.percent=0;
@@ -149,8 +151,10 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
             $scope.balls.push({
                 x:21+(width-42) * Math.random(),
                 y:181+(height-42) * Math.random(),
-                velx: speed*(Math.random()*2-1),
-                vely: speed*(Math.random()*2-1),
+              //  velx: speed*(Math.random()*2-1),
+                //vely: speed*(Math.random()*2-1),
+                velx:3,
+                vely:4,
             });
             count--;
          }
@@ -261,7 +265,7 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
                      filled_cells+=1;
                  }
               }
-              $scope.percent=Math.floor((($scope.percent*863/100+filled_cells)/863)*100);
+              $scope.percent=(($scope.percent*863/100+filled_cells)/863)*100;
           }
           else{
               for(var i=0;i<=count;i++){
@@ -274,7 +278,7 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
                  filled_cells+=1;
                }
               }
-             $scope.percent=Math.floor((($scope.percent*863/100+filled_cells)/863)*100);
+             $scope.percent=(($scope.percent*863/100+filled_cells)/863)*100;
           }
           coverBoard(column,row,hor,ver,counter);
           if(counter==2){
@@ -431,7 +435,7 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
               }
            }
         }
-        $scope.percent=Math.floor((($scope.percent*863/100+filled_cells)/863)*100);
+        $scope.percent=(($scope.percent*863/100+filled_cells)/863)*100;
       }else{
         for(var i=row2+1; i<row1; i++){
             for(var j=column2+1; j<column1; j++){
@@ -441,7 +445,7 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
                }
             }
         }
-        $scope.percent=Math.floor((($scope.percent*863/100+filled_cells)/863)*100);
+        $scope.percent=(($scope.percent*863/100+filled_cells)/863)*100;
       }
       if($scope.percent>=75){
          $scope.nextlevel=true;
@@ -487,5 +491,4 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
           }
     }
     setupBoard();
-    $scope.addBall(2);
 });

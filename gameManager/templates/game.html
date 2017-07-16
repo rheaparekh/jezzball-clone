@@ -3,7 +3,11 @@
 
 {% block logout %}
   <hr>
+  <form action="logout">
+      <input type="submit" id="logout" value="Logout" class="btn btn-success" style="float:right">
+  </form>
 {% endblock %}
+
 {% block Game %}
    <div ng-app="ngBall" ng-controller="ballCtrl">
        <div>
