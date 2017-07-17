@@ -1,8 +1,8 @@
 import os
 import dj_database_url
 
-dj_from_env=dj_database_url.config(conn_max_age=500)
-DATABASES={}
+db_from_env=dj_database_url.config(conn_max_age=500)
+DATABASES={'default':{}}
 DATABASES['default'].update(db_from_env)
 
 PROJECT_PATH=os.path.dirname(os.path.abspath(__file__))
@@ -17,7 +17,7 @@ SOCIAL_AUTH_FACEBOOK_KEY = '1883263895276848'
 SOCIAL_AUTH_FACEBOOK_SECRET = '3438e377faaf711846289c5b379014e6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
    'walltheball.herokuapp.com',
@@ -127,5 +127,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(PROJECT_PATH, 'static')
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_ROOT, 'static'),
+    os.path.join(PROJECT_PATH, 'static'),
 )
