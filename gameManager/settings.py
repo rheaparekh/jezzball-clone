@@ -16,6 +16,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
    'walltheball.herokuapp.com',
+   'localhost:5000',
 ]
 
 INSTALLED_APPS = [
