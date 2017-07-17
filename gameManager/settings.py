@@ -12,9 +12,11 @@ SOCIAL_AUTH_FACEBOOK_KEY = '1883263895276848'
 SOCIAL_AUTH_FACEBOOK_SECRET = '3438e377faaf711846289c5b379014e6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+   'walltheball.herokuapp.com',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
