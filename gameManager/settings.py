@@ -2,6 +2,7 @@ import os
 import dj_database_url
 
 dj_from_env=dj_database_url.config(conn_max_age=500)
+DATABASES={}
 DATABASES['default'].update(db_from_env)
 
 PROJECT_PATH=os.path.dirname(os.path.abspath(__file__))
