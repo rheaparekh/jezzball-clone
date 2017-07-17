@@ -1,4 +1,8 @@
 import os
+import dj_database_url
+
+dj_from_env=dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
 
 PROJECT_PATH=os.path.dirname(os.path.abspath(__file__))
 LOGIN_URL = '/'
@@ -121,3 +125,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(PROJECT_PATH, 'static')
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_ROOT, 'static'),
+)
