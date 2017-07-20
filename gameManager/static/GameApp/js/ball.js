@@ -55,7 +55,7 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
      var timeout;
      var width=840;
      var height=483;
-     var speed=6;
+     var speed=8;
      var rows=24;
      var columns=41;
      var filled_cells=0;
@@ -69,24 +69,27 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
      $scope.life=3; 
      $scope.mode='H';
      $scope.isGameOver=false;
-     $scope.check=false;
+     $scope.checkvar=false;
      $scope.balls=[];
      $scope.score= 0;
      $scope.percent=0;
      $scope.nextlevel=false;
-      
+     $scope.startlinebugfix=false;
+
+     Bounce(); 
+     
      $scope.startGame=function(){
         setupBoard();
+        $scope.startlinebugfix=true;
         $scope.balls=[];
         $scope.addBall(2);
         $scope.level=1;
         $scope.score=0;
         $scope.percent=0;
         $scope.life=3;
-        Bounce();
         timeout=new Date().getTime();
         $scope.isGameOver= false;
-        $scope.check=true;
+        $scope.checkvar=true;
      };
 
      function gameOver(){
@@ -141,7 +144,7 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
            return colors.wall;
        }
        else if($scope.board[col][row]=='markwall'){
-          return colors.markwall;
+          return colors.wall;
        }
        return colors.board; 
      }
@@ -151,10 +154,10 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
             $scope.balls.push({
                 x:21+(width-42) * Math.random(),
                 y:181+(height-42) * Math.random(),
-              //  velx: speed*(Math.random()*2-1),
-                //vely: speed*(Math.random()*2-1),
-                velx:3,
-                vely:4,
+                velx: speed*(Math.random()*2-1),
+                vely: speed*(Math.random()*2-1),
+                //velx:3,
+                //vely:4,
             });
             count--;
          }
@@ -218,9 +221,10 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
          b.vely*=-1;
     }
     
-    $scope.startLine=function(column,row){  
-        if($scope.isGameOver==false && $scope.board[column][row]==false && $scope.check==true){ 
+    $scope.startLine=function(column,row){ 
+        if($scope.isGameOver==false && $scope.board[column][row]==false && $scope.checkvar==true){ 
            counter=0;
+           $scope.startlinebugfix=false;
            if($scope.mode=='H'){
                drawline(column,row,-1,0,0,true);
                drawline(column,row,1,0,0,true);
@@ -234,6 +238,9 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
 
     function drawline(column,row,hor,ver,count,check){
      if($scope.life>0){
+      if($scope.startlinebugfix==true){
+          check=false;
+      }
       if(check==true){
         if($scope.board[column][row]=='wall' || $scope.board[column][row]=='markwall'){
             makewall(column,row,count,hor,ver);
