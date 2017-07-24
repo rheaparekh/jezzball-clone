@@ -2,14 +2,16 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from GameApp.forms import UserCreateForm, AuthenticateForm
-from GameApp.models import Score
+from GameApp.models import Score,HighScore
 from django.http import HttpResponse
 from django.views.decorators.csrf import requires_csrf_token
 
 def index(request,auth_form=None,user_form=None):
   if request.user.is_authenticated():
          user=request.user
-         return render(request,'game.html')
+         hs_list=HighScore.objects.all()
+         context={'hs_list':hs_list}
+         return render(request,'game.html', context)
   else:
          auth_form=auth_form or AuthenticateForm()
          user_form=user_form or UserCreateForm()
@@ -24,10 +26,23 @@ def score_view(request):
 def score_save(request):
    if request.user.is_authenticated():
        user=request.user
-       score=request.POST.get('score')
+       score=int(request.POST.get('score'))
        date=request.POST.get('date')
        scoresave=Score.objects.create(user=user,score=score,date=date)
        return HttpResponse("")
+
+def HighScoreSave(request):
+   if request.user.is_authenticated():
+         highscore_list=HighScore.objects.all()[0]
+         score2=highscore_list.score
+         score1=int(request.POST.get('score'))
+         if(score1>score2):
+            HighScore.objects.all()[0].delete()
+            user=request.user
+            date=request.POST.get('date')
+            highscoresave=HighScore.objects.create(user=user,score=score1,date=date)
+            return HttpResponse("")
+         
 
 def login_view(request):
      if request.method=="POST":

@@ -12,3 +12,11 @@ class Score(models.Model):
    
     def __unicode__(self):
          return unicode(self.score)
+
+class HighScore(models.Model):
+   score= models.IntegerField()
+   user= models.ForeignKey(User)
+   date= models.DateTimeField(auto_now=True,blank=True)
+
+   def __unicode__(self):
+      return unicode(self.score)

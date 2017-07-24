@@ -122,6 +122,14 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
                console.log(e);
              },
          });
+         $.ajax({
+             method:'POST',
+             url:"/save_highscores",
+             data:userdata,
+             error:function(e){
+               console.log(e);
+             },
+         });
      };
 
      $scope.nextLevel=function(){
