@@ -14,7 +14,7 @@
            Score: <div ng-bind="score" id="div" data-user={{user}}> </div> &nbsp; &nbsp;
            Mode: <div ng-bind="mode" id="div"></div> &nbsp; &nbsp;
            Life: <div ng-bind="life" id="div"></div> &nbsp; &nbsp;
-           Percent: <div ng-bind="percent" id="div"></div>
+           Percent: <div ng-bind="percent" id="div" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/"></div>
        </div>
        
        <div>

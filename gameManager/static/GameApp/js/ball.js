@@ -77,8 +77,9 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
      $scope.startlinebugfix=false;
 
      Bounce(); 
-     
+
      $scope.startGame=function(){
+      if($scope.isGameOver==true){
         setupBoard();
         $scope.startlinebugfix=true;
         $scope.balls=[];
@@ -90,6 +91,21 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
         timeout=new Date().getTime();
         $scope.isGameOver= false;
         $scope.checkvar=true;
+        Bounce();
+      }
+      else{
+        setupBoard();
+        $scope.startlinebugfix=true;
+        $scope.balls=[];
+        $scope.addBall(2);
+        $scope.level=1;
+        $scope.score=0;
+        $scope.percent=0;
+        $scope.life=3;
+        timeout=new Date().getTime();
+        $scope.isGameOver= false;
+        $scope.checkvar=true;
+      }
      };
 
      function gameOver(){
@@ -172,7 +188,6 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
             var r=Math.floor(b.x/21);
             var c=Math.floor((b.y-160)/21);
           //  if($scope.board[c][r]=='wall'){
-            //    console.log("not cool");
               //  if(($scope.board[c][r-1]!='wall' && $scope.board[c][r+1]!='wall')){
                  //  if(b.velx<0){               
                    //  BounceX(b,r*21+21);
@@ -182,7 +197,6 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
                 //}else{
                   //  if(b.vely<0){
                     // BounceY(b,21*c+21);
-                     //console.log("dhus");
                     //}
                 //}
            // }
@@ -272,7 +286,7 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
                      filled_cells+=1;
                  }
               }
-              $scope.percent=(($scope.percent*863/100+filled_cells)/863)*100;
+              $scope.percent=Math.round((($scope.percent*863/100+filled_cells)/863)*100);
           }
           else{
               for(var i=0;i<=count;i++){
@@ -285,7 +299,7 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
                  filled_cells+=1;
                }
               }
-             $scope.percent=(($scope.percent*863/100+filled_cells)/863)*100;
+             $scope.percent=Math.round((($scope.percent*863/100+filled_cells)/863)*100);
           }
           coverBoard(column,row,hor,ver,counter);
           if(counter==2){
@@ -442,7 +456,7 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
               }
            }
         }
-        $scope.percent=(($scope.percent*863/100+filled_cells)/863)*100;
+        $scope.percent=Math.round((($scope.percent*863/100+filled_cells)/863)*100);
       }else{
         for(var i=row2+1; i<row1; i++){
             for(var j=column2+1; j<column1; j++){
@@ -452,7 +466,7 @@ app.controller('ballCtrl',function($scope,$timeout,$http){
                }
             }
         }
-        $scope.percent=(($scope.percent*863/100+filled_cells)/863)*100;
+        $scope.percent=Math.round((($scope.percent*863/100+filled_cells)/863)*100);
       }
       if($scope.percent>=75){
          $scope.nextlevel=true;
