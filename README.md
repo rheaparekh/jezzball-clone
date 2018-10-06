@@ -4,3 +4,6 @@ Rules: The player must capture parts of a rectangular space by dividing it with 
 
 heroku url: https://walltheball.herokuapp.com/
 
+
+For the love of gaming and for a subtle promotion of **Heroku hosting platform**, do play :-
+**Word Building** : https://wordbuilding.herokuapp.com/
