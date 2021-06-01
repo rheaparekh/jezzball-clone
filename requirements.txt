@@ -20,6 +20,6 @@ social-auth-app-django==1.2.0
 social-auth-core==1.4.0
 svgwrite==1.1.11
 Tree==0.1b8
-urllib3==1.21.1
+urllib3==1.26.5
 whitenoise==3.3.0
 psycopg2==2.6.2
